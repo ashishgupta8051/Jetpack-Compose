@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,7 +21,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -31,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.jetpackcompose.ui.activity.component.InputField
 import com.example.jetpackcompose.ui.activity.component.RoundIconButton
 import com.example.jetpackcompose.ui.theme.JetpackComposeTheme
@@ -49,24 +47,18 @@ class CalculatorActivity : ComponentActivity() {
 
 @Composable
 fun TopHeader(totalPerPerson:Double = 0.0){
-    Surface(modifier = Modifier
+    Surface(modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 10.dp)
         .fillMaxWidth()
         .height(150.dp)
         .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp)))
         , color = Color.Gray) {
-        Column(modifier = Modifier.padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
             Text(text = "Total per Person", style = MaterialTheme.typography.h6)
             Text(text = "$$ totalPerPerson", style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
         }
-    }
-}
-
-@Composable
-fun MainBody(){
-    BillForm{
-        Log.d("VALUE: ", it)
     }
 }
 
@@ -83,17 +75,15 @@ private fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Uni
     val keyBoardControl = LocalSoftwareKeyboardController.current
 
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(all = 5.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 25.dp, end = 25.dp, bottom = 20.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Color.Gray)) {
         Column(
-            modifier = Modifier.padding(top = 12.dp, bottom = 20.dp, start = 20.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start) {
+            modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
             InputField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(all = 0.dp),
                 valueState = totalBillState,
                 labelId = "Enter Bill",
                 enabled = true,
@@ -108,12 +98,13 @@ private fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Uni
             )
 
             if (!validState){
-                Row(modifier = Modifier.padding(top = 20.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Split", style = TextStyle(color = Color.Black, fontSize = TextUnit.Unspecified))
+                Row(modifier = Modifier.padding(top = 20.dp, start = 5.dp, end = 5.dp).fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
 
-                    Spacer(modifier = Modifier.width(120.dp))
+                    Text(text = "Split", style = TextStyle(color = Color.Black, fontSize = 20.sp))
+
+                    Spacer(modifier = Modifier.width(100.dp))
 
                     Row {
                         RoundIconButton(modifier = Modifier.padding(end = 20.dp), imageVector = Icons.Default.Remove, onClick = {
@@ -135,11 +126,22 @@ private fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Uni
     }
 }
 
+
+@Composable
+fun MainBody(){
+    BillForm(Modifier.padding(20.dp)){
+        Log.d("VALUE: ", it)
+    }
+}
+
+
 @Composable
 fun MyCalculatorApp(content:  @Composable () -> Unit){
     JetpackComposeTheme {
-        Surface(modifier = Modifier.padding(12.dp), color = MaterialTheme.colors.background) {
-            content()
+        Surface(color = MaterialTheme.colors.background) {
+            Column {
+                content()
+            }
         }
     }
 }

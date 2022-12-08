@@ -35,6 +35,7 @@ fun InputField(
     onAction: KeyboardActions = KeyboardActions.Default){
 
     OutlinedTextField(
+        modifier = modifier,
         value = valueState.value,
         onValueChange = {valueState.value = it},
         label = { Text(text = labelId)},
