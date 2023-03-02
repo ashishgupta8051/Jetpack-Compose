@@ -1,4 +1,4 @@
-package com.example.jetpackcompose.ui.activity.ui
+package com.example.jetpackcompose.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,11 +60,15 @@ private fun CardDesign(context: Context) {
         .padding(10.dp, 20.dp, 10.dp, 20.dp),
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(10.dp)),
-        elevation = 5.dp
-    ) {
+        elevation = 5.dp) {
         val clickState = remember {
             mutableStateOf(false)
         }
+
+        val txtValue = remember {
+            mutableStateOf("View Data")
+        }
+
         Column(modifier = Modifier.size(150.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
@@ -76,7 +81,9 @@ private fun CardDesign(context: Context) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Button(onClick = {
                     clickState.value = !clickState.value
-                }, modifier = Modifier.width(150.dp).padding(10.dp,0.dp,5.dp,0.dp),
+                }, modifier = Modifier
+                    .width(150.dp)
+                    .padding(10.dp, 0.dp, 5.dp, 0.dp),
                     elevation =  ButtonDefaults.elevation(
                         defaultElevation = 0.dp,
                         pressedElevation = 0.dp,
@@ -84,12 +91,14 @@ private fun CardDesign(context: Context) {
                         hoveredElevation = 0.dp,
                         focusedElevation = 0.dp)
                 ) {
-                    Text(text = "Clicked", color = Color.White)
+                    Text(text = txtValue.value, color = Color.White)
                 }
 
                 Button(onClick = {
                               context.startActivity(Intent(context,CalculatorActivity::class.java))
-                }, modifier = Modifier.width(150.dp).padding(5.dp,0.dp,10.dp,0.dp),
+                }, modifier = Modifier
+                    .width(150.dp)
+                    .padding(5.dp, 0.dp, 10.dp, 0.dp),
                     elevation =  ButtonDefaults.elevation(
                         defaultElevation = 0.dp,
                         pressedElevation = 0.dp,
@@ -101,19 +110,7 @@ private fun CardDesign(context: Context) {
                 }
             }
 
-            onButtonClicked(clickState)
-
-
-        }
-    }
-}
-
-@Composable
-fun onButtonClicked(clickState: MutableState<Boolean>) {
-    if (clickState.value){
-        ListData()
-    }else{
-        Box {
+            ListData(clickState,txtValue)
         }
     }
 }
@@ -121,7 +118,7 @@ fun onButtonClicked(clickState: MutableState<Boolean>) {
 
 @Composable
 private fun TextView() {
-    Text(text = "Hello Ashish", color = Color.Red , fontSize = 28.sp)
+    Text(text = "Hello Ashish Gupta", color = Color.Red , fontSize = 28.sp)
     Text(text = "Android Developer", color = Color.Black , fontSize = 16.sp, modifier = Modifier.padding(0.dp,2.dp,0.dp,2.dp))
     Text(text = "Android Jetpack Compose Example", color = Color.Gray , fontSize = 16.sp, modifier = Modifier.padding(0.dp,0.dp,0.dp,0.dp))
 }
@@ -146,20 +143,46 @@ private fun CreateImageProfile(modifier: Modifier= Modifier) {
 }
 
 @Composable
-private fun ListData(){
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .padding(5.dp, 5.dp, 5.dp, 5.dp,)){
-        Surface(modifier = Modifier
+private fun ListData(clickState: MutableState<Boolean>, txtValue: MutableState<String>) {
+    if (clickState.value){
+        txtValue.value = "All Users"
+        Box(modifier = Modifier
+            .fillMaxWidth()
             .fillMaxHeight()
-            .fillMaxWidth(),
-            shape = RoundedCornerShape(corner = CornerSize(10.dp)),
-            border = BorderStroke(1.dp,Color.Gray)
-        ) {
-            Portfolio(data = listOf<String>("Android 1","Android 2","Android 3","Android 4","Android 5","Android 6","Android 7"))
+            .padding(5.dp, 5.dp, 5.dp, 5.dp,)){
+            Surface(modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                border = BorderStroke(1.dp,Color.Gray)
+            ) {
+                Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Portfolio(data = listOf<String>("Android 1","Android 2","Android 3","Android 4","Android 5","Android 6","Android 7"))
+                }
+            }
+        }
+    }else{
+        txtValue.value = "View Data"
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(5.dp, 5.dp, 5.dp, 5.dp,)){
+            Surface(modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
+                shape = RoundedCornerShape(corner = CornerSize(10.dp)),
+                border = BorderStroke(1.dp,Color.Gray)
+            ) {
+                Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+
+                    Text(text = "No Data Found!!!",
+                        color = Color.Black,
+                        textAlign = TextAlign.Center)
+                }
+            }
         }
     }
+
 }
 
 @Composable

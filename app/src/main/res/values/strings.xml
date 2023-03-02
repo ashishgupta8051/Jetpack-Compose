@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">JetpackCompose</string>
     <string name="title_activity_2">Activity2</string>
+    <string name="title_activity_movie_list">MovieListActivity</string>
 </resources>
