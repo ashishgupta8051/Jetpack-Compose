@@ -1,27 +1,30 @@
 package com.example.jetpackcompose.database
 
+import android.service.autofill.UserData
 import androidx.room.*
-import com.example.jetpackcompose.model.UserDetail
+import com.example.jetpackcompose.model.Users
+import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addUserData(userDetail: UserDetail)
+    suspend fun addUserData(users: Users)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateUserData(userDetail: UserDetail)
+    suspend fun updateUserData(users: Users)
 
     @Delete
-    fun deleteUserData(userDetail: UserDetail)
+    suspend fun deleteUserData(users: Users)
 
-    @Query("SELECT * from user_detail")
-    fun getUserList(): List<UserDetail>
+    @Query("SELECT * from users_table")
+    fun getUserList(): Flow<List<Users>>
 
-    @Query("SELECT * from user_detail WHERE id =:1d")
-    fun getUserDetailsById(id: String): UserDetail
+    @Query("SELECT * from users_table where id = :id")
+    suspend fun getUserDetailsById(id: String): Users
 
-    @Query("DELETE from user_detail")
-    fun deleteAllUserList()
+    @Query("DELETE from users_table")
+    suspend fun deleteAllUserList()
 
 
 

@@ -1,19 +1,20 @@
 package com.example.jetpackcompose.model
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "user_detail")
-data class UserDetail(
+@Entity(tableName = "users_table")
+data class Users(
     @PrimaryKey
     val id: Int,
-    @ColumnInfo("name")
+    @ColumnInfo(name ="name")
     val name: String,
-    @ColumnInfo("profile_image")
+    @ColumnInfo(name = "profileImage")
     val profileImage: String,
-    @ColumnInfo("qualification")
+    @ColumnInfo(name = "qualification")
     val qualification: List<String>,
-    @ColumnInfo("subjects")
+    @ColumnInfo(name = "subjects")
     val subjects: List<String>
 )

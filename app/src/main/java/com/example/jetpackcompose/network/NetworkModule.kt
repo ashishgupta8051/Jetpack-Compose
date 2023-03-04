@@ -1,10 +1,15 @@
 package com.example.jetpackcompose.network
 
+import android.content.Context
+import androidx.room.Room
 import com.example.jetpackcompose.BuildConfig
+import com.example.jetpackcompose.database.UserDao
+import com.example.jetpackcompose.database.UserDataBase
 import com.example.jetpackcompose.util.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -40,5 +45,18 @@ class NetworkModule {
     @Singleton
     @Provides
     fun gsonConverter(): GsonConverterFactory = GsonConverterFactory.create()
+
+
+    @Singleton
+    @Provides
+    fun getUserDao(userDataBase: UserDataBase): UserDao = userDataBase.getUserDao()
+
+
+    @Singleton
+    @Provides
+    fun provideAppDataBase(@ApplicationContext context: Context): UserDataBase = Room.databaseBuilder(
+        context,
+        UserDataBase::class.java,
+        "users_db").build()
 
 }

@@ -13,9 +13,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.Money
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,9 +27,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.jetpackcompose.viewmodel.UsersVM
 
 @Composable
 fun InputField(
@@ -62,7 +66,10 @@ fun RoundIconButton(
     tint: Color = Color.Black.copy(alpha = 0.8f),
     backGroundColor: Color = MaterialTheme.colors.background,
     elevation: Dp = 4.dp){
-    Card(modifier = modifier.padding(all = 4.dp).clickable{onClick.invoke()}.then(Modifier.size(40.dp)),
+    Card(modifier = modifier
+        .padding(all = 4.dp)
+        .clickable { onClick.invoke() }
+        .then(Modifier.size(40.dp)),
         shape = CircleShape,
         backgroundColor = backGroundColor,
         elevation = elevation,) {
@@ -97,6 +104,3 @@ fun ToolBar(context: Context, activityName: String) {
 }
 
 
-fun ShowLog(message: String){
-    Log.e("DATA",message)
-}
