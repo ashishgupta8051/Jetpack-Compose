@@ -1,4 +1,4 @@
-package com.example.jetpackcompose.model
+package com.example.jetpackcompose.model.converters
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
@@ -7,16 +7,16 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 //@ProvidedTypeConverter
-class LanguageConverters {
+class QualificationConverters {
 
     @TypeConverter
-    fun fromLangString(value: String?): ArrayList<String?>? {
-        val listType = object : TypeToken<ArrayList<String?>?>() {}.type
+    fun fromQuaString(value: String?): List<String?>? {
+        val listType = object : TypeToken<List<String?>?>() {}.type
         return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
-    fun fromLangList(list: ArrayList<String?>?): String? {
+    fun fromQuaList(list: List<String?>?): String? {
         return Gson().toJson(list)
     }
 }

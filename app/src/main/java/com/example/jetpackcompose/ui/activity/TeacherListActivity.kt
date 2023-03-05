@@ -68,25 +68,20 @@ class TeacherListActivity : ComponentActivity() {
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun UsersData(viewModel: UsersVM) {
-    val list = remember {
-        viewModel.users
-    }
+    val list = viewModel.users.collectAsState().value
 
     if (checkInternetConnection(getContext())){
         LazyColumn{
-            items(list.value.size){
-                val data = list.value[it]
-                viewModel.addUsers(data)
-                Data(data,viewModel)
+            items(list.size){
+                viewModel.addUsers(list[it])
+                Data(list[it],viewModel)
             }
         }
     }else{
         val userList = viewModel.users2.collectAsState().value
-
         LazyColumn{
             items(userList.size){
-                val data = userList[it]
-                Data(data, viewModel)
+                Data(userList[it], viewModel)
             }
         }
 
@@ -160,7 +155,9 @@ fun Data(data: Users, viewModel: UsersVM) {
                         .size(26.dp)
                         .clickable {
                             viewModel.deleteUsers(data)
-                            Toast.makeText(context,"User Deleted", Toast.LENGTH_SHORT).show()
+                            Toast
+                                .makeText(context, "User Deleted", Toast.LENGTH_SHORT)
+                                .show()
 
                         }, imageVector = Icons.Default.Delete, contentDescription = "", tint = Color.Red)
                 }
