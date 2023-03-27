@@ -8,13 +8,13 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "users_table")
 data class Users(
     @PrimaryKey
-    val id: Int,
+    var id: Int,
     @ColumnInfo(name ="name")
-    val name: String,
+    var name: String,
     @ColumnInfo(name = "profileImage")
-    val profileImage: String,
+    var profileImage: String,
     @ColumnInfo(name = "qualification")
-    val qualification: List<String>,
+    var qualification: List<String>,
     @ColumnInfo(name = "subjects")
-    val subjects: List<String>
+    var subjects: List<String>
 )

@@ -46,11 +46,9 @@ class NetworkModule {
     @Provides
     fun gsonConverter(): GsonConverterFactory = GsonConverterFactory.create()
 
-
     @Singleton
     @Provides
     fun getUserDao(userDataBase: UserDataBase): UserDao = userDataBase.getUserDao()
-
 
     @Singleton
     @Provides
