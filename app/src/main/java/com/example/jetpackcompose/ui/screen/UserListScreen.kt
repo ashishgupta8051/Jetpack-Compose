@@ -1,11 +1,10 @@
-package com.example.jetpackcompose.ui.activity
+package com.example.jetpackcompose.ui.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,11 +19,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,46 +31,67 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.jetpackcompose.R
-import com.example.jetpackcompose.component.InputField
 import com.example.jetpackcompose.component.ToolBar
 import com.example.jetpackcompose.model.Users
-import com.example.jetpackcompose.ui.theme.JetpackComposeTheme
+import com.example.jetpackcompose.navigation.ScreensName
+import com.example.jetpackcompose.ui.activity.MainActivity
+import com.example.jetpackcompose.ui.activity.MyMovieApp
 import com.example.jetpackcompose.util.checkInternetConnection
 import com.example.jetpackcompose.viewmodel.UsersVM
-import dagger.hilt.android.AndroidEntryPoint
-import java.time.format.TextStyle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
-class TeacherListActivity : ComponentActivity() {
+@Composable
+fun UserListScreen(navController: NavHostController) {
+    Surface(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight()
+        .background(MaterialTheme.colors.background)) {
+        Column {
+            val viewModel = hiltViewModel<UsersVM>()
+            val context = LocalContext.current
+            val doubleClick = remember {
+                mutableStateOf(false)
+            }
+            if (checkInternetConnection(getContext())){
+                ToolBar(getContext(),"Teacher List")
+            }else{
+                ToolBar(getContext(),"Teacher List")
+            }
+            val coroutineScope = rememberCoroutineScope()
+            LaunchedEffect(Unit) {
+                //  viewModel.getUsersData()
+            }
+            if (viewModel.mLoder.value) ProgressBar()
+            UsersData(viewModel)
 
-    @SuppressLint("CoroutineCreationDuringComposition")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MyMovieApp{
-                val viewModel = hiltViewModel<UsersVM>()
-                if (checkInternetConnection(getContext())){
-                    ToolBar(getContext(),"Teacher List")
+            BackHandler {
+                if (doubleClick.value){
+                    (context as MainActivity).finish()
                 }else{
-                    ToolBar(getContext(),"Teacher List")
+                    Toast.makeText(context,"Please click BACK again", Toast.LENGTH_SHORT).show()
+                    doubleClick.value = true
+                    coroutineScope.launch {
+                        delay(2000L)
+                        doubleClick.value = false
+                    }
                 }
-                val coroutineScope = rememberCoroutineScope()
-                LaunchedEffect(Unit) {
-                    viewModel.getUsersData()
-               }
-                if (viewModel.mLoder.value) ProgressBar()
-                UsersData(viewModel)
             }
         }
     }
 }
 
+
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun UsersData(viewModel: UsersVM) {
-    val list = viewModel.users.collectAsState().value
+//    val list = viewModel.users.collectAsState().value
+    val list = viewModel.getUserData.value
 
     if (checkInternetConnection(getContext())){
         LazyColumn{
@@ -92,19 +112,38 @@ fun UsersData(viewModel: UsersVM) {
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Data(data: Users, viewModel: UsersVM) {
     val context = LocalContext.current
     Card(modifier = Modifier
         .fillMaxWidth()
-        .padding(10.dp)
-        .clickable {
-//            onClickd(data.name, context)
-        },
+        .padding(10.dp),
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(10.dp)),
         elevation = 5.dp) {
-        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = {
+                    if (!checkInternetConnection(context)) {
+                        Toast
+                            .makeText(context, "Click", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }, onLongClick = {
+                    if (!checkInternetConnection(context)) {
+                        Toast
+                            .makeText(context, "Long Click", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }, onDoubleClick = {
+                    if (!checkInternetConnection(context)) {
+                        Toast
+                            .makeText(context, "Double Click", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }),horizontalArrangement = Arrangement.SpaceBetween) {
             if (checkInternetConnection(getContext())){
                 Row() {
                     Image(
@@ -151,7 +190,8 @@ fun Data(data: Users, viewModel: UsersVM) {
                     .padding(end = 5.dp, top = 4.dp)) {
                     Icon(modifier = Modifier
                         .padding(end = 6.dp, top = 3.dp)
-                        .size(26.dp).clickable {
+                        .size(26.dp)
+                        .clickable {
                             dialogOpen.value = true
                         }
                         , imageVector = Icons.Default.Edit, contentDescription = "", tint = Color.Black)
@@ -191,7 +231,10 @@ fun CreateCustomDialog(viewModel: UsersVM, data: Users, onDismissRequest: (Boole
             Box(contentAlignment = Alignment.Center){
                 Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = "Update Name",fontSize = 18.sp ,modifier = Modifier.padding(top = 8.dp), color = colorResource(id = R.color.black))
-                    Text(text = "Name",fontSize = 15.sp ,modifier = Modifier.padding(top = 12.dp).align(Alignment.Start), color = colorResource(id = R.color.black))
+                    Text(text = "Name",fontSize = 15.sp ,modifier = Modifier
+                        .padding(top = 12.dp)
+                        .align(Alignment.Start), color = colorResource(id = R.color.black)
+                    )
                     TextField(modifier = Modifier
                         .padding(top = 8.dp)
                         .fillMaxWidth()
@@ -212,7 +255,7 @@ fun CreateCustomDialog(viewModel: UsersVM, data: Users, onDismissRequest: (Boole
                         ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                         maxLines = 1,
-                        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp)
+                        textStyle = TextStyle(fontSize = 14.sp)
                     )
 
                     Row(modifier = Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -254,20 +297,6 @@ fun CreateCustomDialog(viewModel: UsersVM, data: Users, onDismissRequest: (Boole
     }
 }
 
-@Composable
-fun MyMovieApp (content: @Composable () -> Unit){
-    JetpackComposeTheme {
-        Surface(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(MaterialTheme.colors.background)) {
-            Column() {
-                content()
-            }
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview3() {
@@ -288,6 +317,6 @@ fun ProgressBar() {
 }
 
 @Composable
-private fun getContext(): Context{
+private fun getContext(): Context {
     return LocalContext.current
 }

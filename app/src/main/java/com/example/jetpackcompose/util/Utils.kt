@@ -11,8 +11,7 @@ fun ShowLog(message: String){
 
 fun checkInternetConnection(context: Context): Boolean{
     if (context != null) {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (connectivityManager != null) {
             val netInfo = connectivityManager.activeNetworkInfo
             if (netInfo != null && netInfo.isConnected) {
