@@ -45,7 +45,7 @@ class Repository @Inject constructor(@MovieQualifiers private val apiService1: A
     suspend fun deleteUsers(users: Users) = userDao.deleteUserData(users)
     suspend fun updateUsers(users: Users) = userDao.updateUserData(users)
     suspend fun deleteAllUsers() = userDao.deleteAllUserList()
-    suspend fun getUserDetailsById(id: String) = userDao.getUserDetailsById(id)
+    suspend fun getUserDetailsById(id: String):Users = userDao.getUserDetailsById(id)
     fun getAllUsers():Flow<List<Users>>  = userDao.getUserList().flowOn(Dispatchers.IO).conflate()
 
 

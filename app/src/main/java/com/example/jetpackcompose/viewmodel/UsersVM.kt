@@ -1,5 +1,6 @@
 package com.example.jetpackcompose.viewmodel
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
@@ -21,23 +22,20 @@ import javax.inject.Inject
 class UsersVM @Inject constructor(private val repository: Repository) : ViewModel(){
     var users = MutableStateFlow<List<Users>>(emptyList())
     var users2 = MutableStateFlow<List<Users>>(emptyList())
-    var getUserData = users.asStateFlow()
+    var getUserDataOnline = users.asStateFlow()
     var mLoder = mutableStateOf(true)
+    var id = mutableStateOf("0")
+    var userDetails : Users = Users(0,"","", emptyList(), emptyList())
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllUsers().distinctUntilChanged().collect{
                     list->
-                if (list.isEmpty()){
-                    ShowLog("list is null")
-                }else{
-                    users2.value = list
-                }
+                users2.value = list
             }
         }
 
-
-        repository.hitApi(type = TypeOfApi.TEACHERS_API,object :  ApiProcess<List<Users>>{
+        repository.hitApi(type = TypeOfApi.TEACHERS_API, object :  ApiProcess<List<Users>>{
             override fun showLoader(loader: Boolean) {
                 mLoder.value = loader
             }
@@ -89,9 +87,8 @@ class UsersVM @Inject constructor(private val repository: Repository) : ViewMode
     fun deleteAllUsers() = viewModelScope.launch {
         repository.deleteAllUsers()
     }
-    fun getUserDetailsById(id: String) = viewModelScope.launch {
-        repository.getUserDetailsById(id)
+    fun getUserDetailsById(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        userDetails = repository.getUserDetailsById(id)
     }
-
 
 }
