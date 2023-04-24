@@ -18,7 +18,7 @@ class Repository @Inject constructor(@MovieQualifiers private val apiService1: A
                                      private val userDao: UserDao) {
 
     fun <T> hitApi(type: TypeOfApi,request: ApiProcess<List<T>>) {
-        val hitApi: Flow<Response<Any>> = flow {
+        val hitApi = flow {
             val response = request.sendRequest(when(type){
                 TypeOfApi.MOVIES_API -> apiService1
                 TypeOfApi.TEACHERS_API -> apiService2

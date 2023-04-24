@@ -2,7 +2,6 @@ package com.example.jetpackcompose.ui.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
@@ -148,7 +147,7 @@ fun UsersData(viewModel: UsersVM, navController: NavHostController) {
             }
         }
     }else{
-        val offline_list = viewModel.users2.collectAsState().value
+        val offline_list = viewModel.offlineUsers.collectAsState().value
 //        val offline_list = viewModel.getUserDataOffline.value
         LazyColumn{
             items(offline_list.size){

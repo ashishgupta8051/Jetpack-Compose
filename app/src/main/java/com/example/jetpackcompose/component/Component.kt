@@ -2,7 +2,6 @@ package com.example.jetpackcompose.component
 
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -34,7 +33,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -133,7 +131,7 @@ fun ToolBar(context: Context, activityName: String, viewModel: UsersVM = hiltVie
                     Icon(modifier = Modifier
                         .size(26.dp)
                         .clickable {
-                            if (viewModel.users2.value.isEmpty()) {
+                            if (viewModel.offlineUsers.value.isEmpty()) {
                                 Toast
                                     .makeText(
                                         context,

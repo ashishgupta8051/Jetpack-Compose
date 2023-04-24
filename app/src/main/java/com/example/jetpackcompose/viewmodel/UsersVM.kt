@@ -1,8 +1,6 @@
 package com.example.jetpackcompose.viewmodel
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetpackcompose.model.Users
@@ -10,7 +8,6 @@ import com.example.jetpackcompose.network.Repository
 import com.example.jetpackcompose.network.TypeOfApi
 import com.example.jetpackcompose.util.ApiProcess
 import com.example.jetpackcompose.util.ApiService
-import com.example.jetpackcompose.util.ShowLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -20,9 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UsersVM @Inject constructor(private val repository: Repository) : ViewModel(){
-    var users = MutableStateFlow<List<Users>>(emptyList())
-    var users2 = MutableStateFlow<List<Users>>(emptyList())
-    var getUserDataOnline = users.asStateFlow()
+    var onlineUsers = MutableStateFlow<List<Users>>(emptyList())
+    var offlineUsers = MutableStateFlow<List<Users>>(emptyList())
+    var getUserDataOnline = onlineUsers.asStateFlow()
+    var getUserDataOffline = offlineUsers.asStateFlow()
     var mLoder = mutableStateOf(true)
     var id = mutableStateOf("0")
     var userDetails : Users = Users(0,"","", emptyList(), emptyList())
@@ -31,7 +29,7 @@ class UsersVM @Inject constructor(private val repository: Repository) : ViewMode
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllUsers().distinctUntilChanged().collect{
                     list->
-                users2.value = list
+                offlineUsers.value = list
             }
         }
 
@@ -45,7 +43,7 @@ class UsersVM @Inject constructor(private val repository: Repository) : ViewMode
             }
 
             override fun success(response: Response<Any>) {
-                users.value = response.body() as MutableList<Users>
+                onlineUsers.value = response.body() as MutableList<Users>
             }
 
             override fun failure(message: String) {
@@ -66,7 +64,7 @@ class UsersVM @Inject constructor(private val repository: Repository) : ViewMode
             }
 
             override fun success(response: Response<Any>) {
-                users.value = response.body() as MutableList<Users>
+                onlineUsers.value = response.body() as MutableList<Users>
             }
 
             override fun failure(message: String) {
