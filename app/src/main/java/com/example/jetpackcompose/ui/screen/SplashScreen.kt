@@ -40,9 +40,6 @@ fun SplashScreen(navController: NavHostController = NavHostController(LocalConte
                 navController.popBackStack()
                 navController.navigate(ScreensName.UsersScreen.name)
             }
-
-
-
         }
     }
 }
