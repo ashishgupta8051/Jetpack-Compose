@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.jetpackcompose.ui.screen.SplashScreen
 import com.example.jetpackcompose.ui.screen.UserDetailsScreen
 import com.example.jetpackcompose.ui.screen.UserListScreen
 
@@ -12,10 +11,7 @@ import com.example.jetpackcompose.ui.screen.UserListScreen
 fun ScreensNavigation (){
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = ScreensName.SplashScreen.name){
-        composable(ScreensName.SplashScreen.name) {
-            SplashScreen(navController)
-        }
+    NavHost(navController = navController, startDestination = ScreensName.UsersScreen.name){
 
         composable(ScreensName.UsersScreen.name) {
             UserListScreen(navController)

@@ -36,10 +36,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun UserListScreen(navController: NavHostController) {
-    Surface(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .background(MaterialTheme.colors.background)) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .background(MaterialTheme.colors.background)
+    ) {
         Column {
             val lifecycle = remember { mutableStateOf("") }
             val viewModel = hiltViewModel<UsersVM>()
@@ -47,82 +49,89 @@ fun UserListScreen(navController: NavHostController) {
             val doubleClick = remember { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
 
-/*
-            ComposableLifecycle { _, event ->
-                when(event){
-                    Lifecycle.Event.ON_CREATE -> {
-                        Log.e("Lifecycle","ON_CREATE")
-                        lifecycle.value = LifecycleEvents.ON_CREATE.name
-                    }
-                    Lifecycle.Event.ON_START -> {
-                        Log.e("Lifecycle","ON_START")
-                        lifecycle.value = LifecycleEvents.ON_START.name
-                    }
-                    Lifecycle.Event.ON_RESUME -> {
-                        Log.e("Lifecycle","ON_RESUME")
-                        lifecycle.value = LifecycleEvents.ON_RESUME.name
-                    }
-                    Lifecycle.Event.ON_PAUSE -> {
-                        Log.e("Lifecycle","ON_PAUSE")
-                        lifecycle.value = LifecycleEvents.ON_PAUSE.name
-                    }
-                    Lifecycle.Event.ON_STOP -> {
-                        Log.e("Lifecycle","ON_STOP")
-                        lifecycle.value = LifecycleEvents.ON_STOP.name
-                    }
-                    Lifecycle.Event.ON_DESTROY -> {
-                        Log.e("Lifecycle","ON_DESTROY")
-                        lifecycle.value = LifecycleEvents.ON_DESTROY.name
-                    }
-                    Lifecycle.Event.ON_ANY -> {
-                        Log.e("Lifecycle-->", "ON_ANY")
-                        lifecycle.value = LifecycleEvents.ON_ANY.name
-                    }
-                    else -> {
+            /*
+                        ComposableLifecycle { _, event ->
+                            when(event){
+                                Lifecycle.Event.ON_CREATE -> {
+                                    Log.e("Lifecycle","ON_CREATE")
+                                    lifecycle.value = LifecycleEvents.ON_CREATE.name
+                                }
+                                Lifecycle.Event.ON_START -> {
+                                    Log.e("Lifecycle","ON_START")
+                                    lifecycle.value = LifecycleEvents.ON_START.name
+                                }
+                                Lifecycle.Event.ON_RESUME -> {
+                                    Log.e("Lifecycle","ON_RESUME")
+                                    lifecycle.value = LifecycleEvents.ON_RESUME.name
+                                }
+                                Lifecycle.Event.ON_PAUSE -> {
+                                    Log.e("Lifecycle","ON_PAUSE")
+                                    lifecycle.value = LifecycleEvents.ON_PAUSE.name
+                                }
+                                Lifecycle.Event.ON_STOP -> {
+                                    Log.e("Lifecycle","ON_STOP")
+                                    lifecycle.value = LifecycleEvents.ON_STOP.name
+                                }
+                                Lifecycle.Event.ON_DESTROY -> {
+                                    Log.e("Lifecycle","ON_DESTROY")
+                                    lifecycle.value = LifecycleEvents.ON_DESTROY.name
+                                }
+                                Lifecycle.Event.ON_ANY -> {
+                                    Log.e("Lifecycle-->", "ON_ANY")
+                                    lifecycle.value = LifecycleEvents.ON_ANY.name
+                                }
+                                else -> {
 
-                    }
-                }
-            }
-*/
+                                }
+                            }
+                        }
+            */
 
             LifecycleEvents(lifecycle)
 
-            when(lifecycle.value){
+            when (lifecycle.value) {
                 LifecycleEvents.ON_CREATE.name -> {
                 }
+
                 LifecycleEvents.ON_START.name -> {
                 }
+
                 LifecycleEvents.ON_RESUME.name -> {
 
-                    if (checkInternetConnection(getContext())){
-                        ToolBar(getContext(),"User List")
-                    }else{
-                        ToolBar(getContext(),"User List", viewModel)
+                    if (checkInternetConnection(getContext())) {
+                        ToolBar(getContext(), "User List")
+                    } else {
+                        ToolBar(getContext(), "User List", viewModel)
                     }
                     LaunchedEffect(Unit) {
                         //  viewModel.getUsersData()
                     }
                     if (viewModel.mLoder.value) ProgressBar()
-                    UsersData(viewModel,navController)
+                    UsersData(viewModel, navController)
                 }
+
                 LifecycleEvents.ON_PAUSE.name -> {
                 }
+
                 LifecycleEvents.ON_STOP.name -> {
                 }
-                LifecycleEvents.ON_DESTROY.name-> {
+
+                LifecycleEvents.ON_DESTROY.name -> {
                 }
+
                 LifecycleEvents.ON_ANY.name -> {
                 }
+
                 else -> {
 
                 }
             }
 
             BackHandler {
-                if (doubleClick.value){
+                if (doubleClick.value) {
                     (context as MainActivity).finish()
-                }else{
-                    Toast.makeText(context,"Please click BACK again", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Please click BACK again", Toast.LENGTH_SHORT).show()
                     doubleClick.value = true
                     coroutineScope.launch {
                         delay(2000L)
@@ -137,21 +146,21 @@ fun UserListScreen(navController: NavHostController) {
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun UsersData(viewModel: UsersVM, navController: NavHostController) {
-    if (checkInternetConnection(getContext())){
+    if (checkInternetConnection(getContext())) {
         //    val list = viewModel.users.collectAsState().value
         val list = viewModel.getUserDataOnline.value
-        LazyColumn{
-            items(list.size){
+        LazyColumn {
+            items(list.size) {
                 viewModel.addUsers(list[it])
-                Data(list[it],viewModel,navController)
+                Data(list[it], viewModel, navController)
             }
         }
-    }else{
+    } else {
         val offline_list = viewModel.offlineUsers.collectAsState().value
 //        val offline_list = viewModel.getUserDataOffline.value
-        LazyColumn{
-            items(offline_list.size){
-                Data(offline_list[it], viewModel,navController)
+        LazyColumn {
+            items(offline_list.size) {
+                Data(offline_list[it], viewModel, navController)
             }
         }
     }
@@ -162,19 +171,24 @@ fun UsersData(viewModel: UsersVM, navController: NavHostController) {
 @Composable
 fun Data(data: Users, viewModel: UsersVM, navController: NavHostController) {
     val context = LocalContext.current
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(10.dp),
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         backgroundColor = Color.White,
         shape = RoundedCornerShape(corner = CornerSize(10.dp)),
-        elevation = 5.dp) {
+        elevation = 5.dp
+    ) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {
                     if (!checkInternetConnection(context)) {
                         val id: String = data.id.toString()
-                        navController.currentBackStackEntry?.savedStateHandle?.set("user_id", id)
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "user_id",
+                            id
+                        )
                         navController.navigate(ScreensName.DetailsScreen.name)
                     }
                 }, onLongClick = {
@@ -185,7 +199,8 @@ fun Data(data: Users, viewModel: UsersVM, navController: NavHostController) {
                     Toast
                         .makeText(context, "Double Click", Toast.LENGTH_SHORT)
                         .show()
-                }),horizontalArrangement = Arrangement.SpaceBetween) {
+                }), horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             UsersListScreen(data, viewModel, context)
         }
     }
@@ -196,6 +211,7 @@ fun Data(data: Users, viewModel: UsersVM, navController: NavHostController) {
 private fun getContext(): Context {
     return LocalContext.current
 }
+
 @Composable
 fun ComposableLifecycle(
     lifeCycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
